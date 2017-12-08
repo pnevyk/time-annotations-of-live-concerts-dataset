@@ -39,7 +39,7 @@ of recording. Example: *Red Hot Chili Peppers - Rock In Rio Lisboa 2006*.
 *Funk Rock*.
 * **Audio Quality** &ndash; The are no clear borders, it is an approximate label. There are three possible value:
 *Good* (high quality recording), *Average* (recording using reasonable equipment or old recording), *Bad* (amateur
-recording or old recording using non-professional equipment).
+recording or old recording using non-professional equipment). *Concerts of all types of audio quality are desired!*
 
 ##### Boundaries
 
