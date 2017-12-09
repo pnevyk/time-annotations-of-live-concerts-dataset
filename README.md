@@ -53,5 +53,6 @@ recommendations which may be extended in the future:
 
 # License
 
-All time annotations are released under [MIT](./LICENSE) license. By submitting your annotation you are agreeing that it
-will be available under this license. Please submit only your work or work which is publicly available on the web.
+All time annotations are released under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) license. By
+submitting your annotation you are agreeing that it will be available under this license. Please submit only your work
+or work which is publicly available on the web.
