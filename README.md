@@ -5,7 +5,7 @@ the web. This information can be then used by people who want to do some music/s
 to copyright rights conformity, this repository doesn't contain actual audio files, only links to these files (mostly
 video-sharing sites) and corresponding annotations.
 
-## HELP APPRECIATED
+## Help Appreciated
 
 The bigger this dataset is, the better for any analysis. However, annotating concerts requires some manual work.
 Nevertheless, this work is quite simple (although boring) and no special knowledge is necessary. Therefore everyone can
@@ -50,6 +50,51 @@ recommendations which may be extended in the future:
 * When song ends with fade out
   * If the fade out is ended with a loud hit, the boundary is placed on this hit
   * Otherwise, the boundary is placed on the start of the fade out
+
+## Using
+
+There is a small Python script which handles basic data retrieving.
+
+### Install
+
+The script requires `ffmpeg` installed on your system.
+
+```bash
+# clone this repository, you can use name of your choice
+git clone git@github.com:pnevyk/time-annotations-of-live-concerts-dataset.git talc
+# go to the repo directory
+cd talc
+# install python package to be available in your scripts, name of the package is `talc`
+pip install .
+```
+
+### Usage
+
+```python
+import talc
+
+# get metadata
+talc.get_metadata()
+# => pandas dataframe representation of data/index.csv file
+
+# get all concerts names and corresponding audio file paths
+talc.get_audio_list()
+# => [('AC/DC - Capital Centre 1981', '<path to repository>/.audio/acdc-capital-centre-1981.wav'), ...]
+# you can alter destination directory via TALC_AUDIO_DIRECTORY environment variable
+# if audio files are not present in the destination directory, they are automatically downloaded
+# this process may take a while
+
+# get audio file path to one concert
+talc.get_audio_filepath('Metallica - Moscow 1991')
+# => <path to repository>/.audio/metallica-moscow-1991.wav
+# again, you can alter destination directory via TALC_AUDIO_DIRECTORY environment variable
+
+# get time annotations for a concert
+talc.get_time_annotations('Metallica - Moscow 1991')
+# => [(0, 304), (328, 784), ...]
+# by default, these times are in seconds
+# if you want to get human readable times, call this function with `seconds` argument set to False
+```
 
 # License
 
