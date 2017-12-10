@@ -5,16 +5,25 @@ import numpy as np
 import pandas as pd
 from pytube import YouTube
 
-def get_metadata():
-    return pd.read_csv(os.path.join(_get_script_directory(), 'data', 'index.csv'))
+def get_metadata(name=None):
+    metadata = pd.read_csv(os.path.join(_get_script_directory(), 'data', 'index.csv'))
+    if name is None:
+        return metadata
+    else:
+        index_mask = metadata['Name'] == name
+        if np.any(index_mask):
+            return metadata[index_mask].iloc[0]
+        else:
+            print("{} does not exist in the TALC dataset".format(name))
+            return None
 
 def get_audio_list():
     destination = _get_audio_files_destination()
     _create_destination_directory(destination)
 
     audio_list = []
-    data_info = get_metadata()
-    for index, item in data_info.iterrows():
+    metadata = get_metadata()
+    for index, item in metadata.iterrows():
         audio_list.append((item['Name'], _get_or_download(destination, item)))
 
     return audio_list
@@ -23,22 +32,21 @@ def get_audio_filepath(name):
     destination = _get_audio_files_destination()
     _create_destination_directory(destination)
 
-    data_info = get_metadata()
-    index_mask = data_info['Name'] == name
-    if np.any(index_mask):
-        return _get_or_download(destination, data_info[index_mask].iloc[0])
-    else:
-        print('"{}" was not found in dataset'.format(name))
+    item = get_metadata(name)
+    if item is None:
         return None
+    else:
+        return _get_or_download(destination, item)
 
 def get_time_annotations(name, seconds=True):
     times_pattern = re.compile('^(\\d{1,2}\\:\\d{1,2}\\:\\d{1,2})\\s(\\d{1,2}\\:\\d{1,2}\\:\\d{1,2})')
     time_pattern = re.compile('(\\d{1,2})\\:(\\d{1,2})\\:(\\d{1,2})')
 
-    data_info = get_metadata()
-    index_mask = data_info['Name'] == name
-    if np.any(index_mask):
-        txt_filename = '{}.txt'.format(data_info[index_mask].iloc[0]['File'])
+    item = get_metadata(name)
+    if item is None:
+        return None
+    else:
+        txt_filename = '{}.txt'.format(item['File'])
         txt_fullpath = os.path.join(_get_script_directory(), 'data', txt_filename)
 
         times_list = []
@@ -58,9 +66,6 @@ def get_time_annotations(name, seconds=True):
                         times_list.append((matched.group(1), matched.group(2)))
 
         return times_list
-    else:
-        print('"{}" was not found in dataset'.format(name))
-        return None
 
 
 def _create_destination_directory(destination):
