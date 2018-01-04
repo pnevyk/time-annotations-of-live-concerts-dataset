@@ -33,7 +33,7 @@ these times separated by space. Metadata for each concert are:
 * **Name** &ndash; User friendly name of the concert. It should be the band name and optionally the venue and the year
 of recording. Example: *Red Hot Chili Peppers - Rock In Rio Lisboa 2006*.
 * **File** &ndash; Same as *Name*, but in lowercase and with hyphens instead of spaces. Example:
-*red-hot-chili-peppers-rock-in-rio-lisboa-2006.txt*.
+*red-hot-chili-peppers-rock-in-rio-lisboa-2006*.
 * **Link** &ndash; Link to the audio of the concert. Example: *https://www.youtube.com/watch?v=BUZmNViNgxA*.
 * **Genre** &ndash; Currently, there are no restrictions, but it should be a reasonably high level label. Example:
 *Funk Rock*.
