@@ -1,9 +1,11 @@
 import os
+import sys
 import re
 
 import numpy as np
 import pandas as pd
 from pytube import YouTube
+import av
 
 def get_metadata(name=None):
     metadata = pd.read_csv(os.path.join(_get_script_directory(), 'data', 'index.csv'))
@@ -84,15 +86,43 @@ def _get_or_download(destination, item):
     wav_fullpath = os.path.join(destination, wav_filename)
 
     if not os.path.exists(wav_fullpath):
-        print('Downloading "{}"'.format(item['Name']))
+        # do not write info and error messages to stdout/stderr
+        devnull = open(os.devnull, 'w')
+        stdout, stderr = sys.stdout, sys.stderr
+        sys.stdout, sys.stderr = devnull, devnull
+
         yt = YouTube(item['Link'])
+
         # download first available audio stream
         stream = yt.streams.filter(only_audio=True).first()
         output_file = os.path.join(destination, stream.default_filename)
-        stream.download(output_path=destination)  # from pytube 7.0.19 it will be possible to specify custom filename as well
+        stream.download(output_path=destination)
+
         # convert the stream into standard format, i.e. Mono PCM 16b Little Endian with 22.05kHz sampling rate
-        # TODO: this is not perfect solution, there should be a convenient wrapper around ffmpeg (or other library)
-        os.system('ffmpeg -i "{input}" -acodec pcm_s16le -ac 1 -ar 22050 {output} &> /dev/null'.format(input=output_file, output=wav_fullpath))
+        input = av.open(output_file)
+        output = av.open(wav_filename, 'w')
+        resampler = av.AudioResampler('s16', 1, 22050)
+
+        stream = output.add_stream('pcm_s16le', 22050)
+        stream.layout = 'mono'
+        stream.channels = 1
+
+        for frame in input.decode(audio=0):
+            frame = resampler.resample(frame)
+
+            for packet in stream.encode(frame):
+                output.mux(packet)
+
+        for packet in stream.encode():
+            output.mux(packet)
+
+        # write output file
+        output.close()
+
+        # remove temporary file
         os.remove(output_file)
+
+        # restore stdout and stderr
+        sys.stdout, sys.stderr = stdout, stderr
 
     return wav_fullpath
