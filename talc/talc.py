@@ -8,7 +8,7 @@ from pytube import YouTube
 import av
 
 def get_metadata(name=None):
-    metadata = pd.read_csv(os.path.join(_get_script_directory(), 'data', 'index.csv'))
+    metadata = pd.read_csv(os.path.join(_get_script_directory(), '..', 'data', 'index.csv'))
     if name is None:
         return metadata
     else:
@@ -49,7 +49,7 @@ def get_time_annotations(name, seconds=True):
         return None
     else:
         txt_filename = '{}.txt'.format(item['File'])
-        txt_fullpath = os.path.join(_get_script_directory(), 'data', txt_filename)
+        txt_fullpath = os.path.join(_get_script_directory(), '..', 'data', txt_filename)
 
         times_list = []
         with open(txt_fullpath) as file_handle:
@@ -79,7 +79,7 @@ def _get_script_directory():
 
 def _get_audio_files_destination():
     return (os.path.join(os.getcwd(), os.environ['TALC_AUDIO_DIRECTORY']) if 'TALC_AUDIO_DIRECTORY' in os.environ
-            else os.path.join(os.path.dirname(os.path.realpath(__file__)), '.audio'))
+            else os.path.join(_get_script_directory(), '..', '.audio'))
 
 def _get_or_download(destination, item):
     wav_filename = '{}.wav'.format(item['File'])

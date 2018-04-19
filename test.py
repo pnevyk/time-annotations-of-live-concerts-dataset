@@ -11,8 +11,8 @@ def mock_create_destination_directory(destination):
     pass
 
 
-talc._get_or_download = mock_get_or_download
-talc._create_destination_directory = mock_create_destination_directory
+talc.talc._get_or_download = mock_get_or_download
+talc.talc._create_destination_directory = mock_create_destination_directory
 
 
 class TALCTest(unittest.TestCase):
@@ -63,6 +63,18 @@ class TALCTest(unittest.TestCase):
         self.assertTupleEqual(times[0], (5, 358))
         times = talc.get_time_annotations('AC/DC - Capital Centre 1981', seconds=False)
         self.assertTupleEqual(times[0], ('0:00:05', '0:05:58'))
+
+    def test_stats(self):
+        times = talc.get_time_annotations('AC/DC - Capital Centre 1981')
+        f_measure, precision, recall, specificity = talc.stats(times, [(0, 3000), (3500, 6318)], 6318)
+        stringified = '{:.5f} {:.5f} {:.5f} {:.5f}'.format(f_measure, precision, recall, specificity)
+        self.assertEqual(stringified, '0.88699 0.86473 0.91042 0.00631')
+
+    def test_error(self):
+        times = talc.get_time_annotations('AC/DC - Capital Centre 1981')
+        error = talc.error(times, [(0, 3000), (3500, 6318)], 6318)
+        stringified = '{:.5f}'.format(error)
+        self.assertEqual(stringified, '0.41992')
 
 
 if __name__ == '__main__':

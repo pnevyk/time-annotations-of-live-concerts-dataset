@@ -1,2 +1,6 @@
-/__pycache__/
-/.audio/
+# python
+__pycache__
+talc.egg-info
+.eggs
+
+.audio
