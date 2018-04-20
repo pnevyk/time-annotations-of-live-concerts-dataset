@@ -14,13 +14,21 @@ def mock_create_destination_directory(destination):
 talc.talc._get_or_download = mock_get_or_download
 talc.talc._create_destination_directory = mock_create_destination_directory
 
+# count items
+items_count = 0
+with open('talc/data/index.csv') as f:
+    for _ in f:
+        items_count += 1
+
+# subtract header line
+items_count -= 1
 
 class TALCTest(unittest.TestCase):
     def test_get_metadata(self):
         metadata = talc.get_metadata()
         item = metadata.iloc[0]
 
-        self.assertEqual(len(metadata), 9)
+        self.assertEqual(len(metadata), items_count)
         self.assertEqual(item['Name'], 'AC/DC - Capital Centre 1981')
         self.assertEqual(item['File'], 'acdc-capital-centre-1981')
         self.assertEqual(item['Link'], 'https://www.youtube.com/watch?v=uXVas4bUbsg')
@@ -37,14 +45,14 @@ class TALCTest(unittest.TestCase):
     def test_get_audio_list(self):
         audio_list = talc.get_audio_list()
         item = audio_list[0]
-        self.assertEqual(len(audio_list), 9)
+        self.assertEqual(len(audio_list), items_count)
         self.assertEqual(item[0], 'AC/DC - Capital Centre 1981')
         self.assertTrue(item[1].endswith(os.path.join('.audio', 'acdc-capital-centre-1981.wav')))
 
         os.environ['TALC_AUDIO_DIRECTORY'] = 'test'
         audio_list = talc.get_audio_list()
         item = audio_list[0]
-        self.assertEqual(len(audio_list), 9)
+        self.assertEqual(len(audio_list), items_count)
         self.assertEqual(item[0], 'AC/DC - Capital Centre 1981')
         self.assertTrue(item[1].endswith(os.path.join('test', 'acdc-capital-centre-1981.wav')))
         del os.environ['TALC_AUDIO_DIRECTORY']
