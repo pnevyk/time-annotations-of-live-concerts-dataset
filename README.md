@@ -58,7 +58,8 @@ There is a small Python script which handles basic data retrieving.
 ### Install
 
 *This package depends on [PyAV](https://github.com/mikeboers/PyAV) package which is a pythonic wrapper for `ffmpeg`.
-This may cause some installation difficulties.*
+This may cause some installation difficulties. See its
+[installation instructions](http://mikeboers.github.io/PyAV/installation.html)*
 
 ```bash
 # clone this repository, you can use name of your choice
