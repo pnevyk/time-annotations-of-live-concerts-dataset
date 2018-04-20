@@ -18,7 +18,7 @@ help build this dataset, and I do appreciate any eventual help.
 If you have GitHub account, you can submit your annotations either via
 [issues](https://github.com/pnevyk/time-annotations-of-live-concerts-dataset/issues) or by opening a
 [pull request](https://github.com/pnevyk/time-annotations-of-live-concerts-dataset/pulls) where you add annotation file
-and update `data/index.csv` file accordingly.
+and update `talc/data/index.csv` file accordingly.
 
 #### Google Forms
 
@@ -26,9 +26,9 @@ For non-GitHub users there is a simple [Google form](https://goo.gl/forms/GRxmIR
 
 #### Guidelines
 
-All annotations files are placed in `data/` directory. There is also `index.csv` file in `data/` directory which
-contains metadata for all concerts. Times are in simple `h:mm:ss` format, each song on new line and consisting of two
-these times separated by space. Metadata for each concert are:
+All annotations files are placed in `talc/data/` directory. There is also `index.csv` file in `talc/data/` directory
+which contains metadata for all concerts. Times are in simple `h:mm:ss` format, each song on new line and consisting of
+two these times separated by space. Metadata for each concert are:
 
 * **Name** &ndash; User friendly name of the concert. It should be the band name and optionally the venue and the year
 of recording. Example: *Red Hot Chili Peppers - Rock In Rio Lisboa 2006*.
@@ -57,7 +57,8 @@ There is a small Python script which handles basic data retrieving.
 
 ### Install
 
-The script requires `ffmpeg` installed on your system.
+*This package depends on [PyAV](https://github.com/mikeboers/PyAV) package which is a pythonic wrapper for `ffmpeg`.
+This may cause some installation difficulties.*
 
 ```bash
 # clone this repository, you can use name of your choice
