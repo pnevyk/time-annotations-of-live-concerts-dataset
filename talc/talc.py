@@ -5,7 +5,14 @@ import re
 import numpy as np
 import pandas as pd
 from pytube import YouTube
-import av
+
+# due to pyav problematic dependencies, its import can fail
+try:
+    import av
+    av_loaded = True
+except ImportError:
+    av_loaded = False
+
 
 def get_metadata(name=None):
     metadata = pd.read_csv(os.path.join(_get_script_directory(), 'data', 'index.csv'))
@@ -99,8 +106,20 @@ def _get_or_download(destination, item):
         stream.download(output_path=destination)
 
         # convert the stream into standard format, i.e. Mono PCM 16b Little Endian with 22.05kHz sampling rate
-        input = av.open(output_file)
-        output = av.open(wav_filename, 'w')
+        _convert(output_file, wav_fullpath)
+
+        # remove temporary file
+        os.remove(output_file)
+
+        # restore stdout and stderr
+        sys.stdout, sys.stderr = stdout, stderr
+
+    return wav_fullpath
+
+def _convert(input_filepath, output_filepath):
+    if av_loaded:
+        input = av.open(input_filepath)
+        output = av.open(output_filepath, 'w')
         resampler = av.AudioResampler('s16', 1, 22050)
 
         stream = output.add_stream('pcm_s16le', 22050)
@@ -118,11 +137,6 @@ def _get_or_download(destination, item):
 
         # write output file
         output.close()
-
-        # remove temporary file
-        os.remove(output_file)
-
-        # restore stdout and stderr
-        sys.stdout, sys.stderr = stdout, stderr
-
-    return wav_fullpath
+    else:
+        # fallback to raw ffmpeg spawning
+        os.system('ffmpeg -i "{}" -acodec pcm_s16le -ac 1 -ar 22050 {} &> /dev/null'.format(input_filepath, output_filepath))
