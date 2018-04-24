@@ -84,6 +84,26 @@ class TALCTest(unittest.TestCase):
         stringified = '{:.5f}'.format(error)
         self.assertEqual(stringified, '0.41992')
 
+    def test_metadata(self):
+        metadata = talc.get_metadata()
+        for _, item in metadata.iterrows():
+            self.assertIsInstance(item['Name'], str)
+            self.assertIsInstance(item['File'], str)
+            self.assertIsInstance(item['Link'], str)
+            self.assertIsInstance(item['Genre'], str)
+            self.assertIsInstance(item['Audio quality'], str)
+
+    def test_time_annotations(self):
+        metadata = talc.get_metadata()
+        for _, item in metadata.iterrows():
+            times = talc.get_time_annotations(item['Name'])
+
+            last = 0
+            for song in times:
+                self.assertLessEqual(last, song[0])
+                self.assertLessEqual(song[0], song[1])
+                last = song[0]
+
 
 if __name__ == '__main__':
     unittest.main()
