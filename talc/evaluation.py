@@ -19,7 +19,7 @@ def stats(ground_truth, predicted, audio_length):
     FN = np.count_nonzero(truth_mask & ~predicted_mask)
     TN = np.count_nonzero(~truth_mask & ~predicted_mask)
 
-    if (TP + FP) == 0 or (TP + FN) == 0 or (TN + FP) == 0:
+    if TP == 0 or TN == 0 or FP == 0 or FN == 0:
         # cannot compute the statistics
         precision = 0
         recall = 0
@@ -33,13 +33,18 @@ def stats(ground_truth, predicted, audio_length):
 
     return f_measure, precision, recall, specificity
 
-def error(ground_truth, predicted, audio_length):
+# measures boundary deviation of start and end boundaries
+def dist_both(x, y):
+    return abs(x[0] - y[0]) + abs(x[1] - y[1])
+
+# measures boundary deviation of only start boundaries
+def dist_start(x, y):
+    return abs(x[0] - y[0])
+
+def error(ground_truth, predicted, audio_length, distance=dist_both):
     if len(predicted) == 0:
         # cannot compute the error
         return 0
     else:
         # actual error divided by normalization (a worst case in some way)
-        return dtw(ground_truth, predicted, manhattan)[0] / dtw(ground_truth, [(0, audio_length)], manhattan)[0]
-
-def manhattan(x, y):
-    return abs(x[0] - y[0]) + abs(x[1] - y[1])
+        return dtw(ground_truth, predicted, distance)[0] / dtw(ground_truth, [(0, audio_length)], distance)[0]
