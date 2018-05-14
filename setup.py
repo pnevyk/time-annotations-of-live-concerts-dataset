@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='talc',
-      version='0.1.2',
+      version='1.0.0',
       description='Time Annotations for Live Concerts Dataset',
       keywords='time annotations live concerts dataset',
       url='https://github.com/pnevyk/time-annotations-of-live-concerts-dataset',
